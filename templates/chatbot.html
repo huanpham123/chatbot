@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Gemini</title>
+  <style>
+    body { 
+      background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkjmugose6Ix-QVzZP0btnBPR9GDIrfUVV8Q&s");
+      font-family: Arial; padding: 20px; 
+      background-size: cover;
+      background-repeat: no-repeat;
+     }
+    #chatbox {
+
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      max-width: 1500px;
+      background: white;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+      border-radius: 10px;
+    }
+    .user { color: blue; font-weight: bold; }
+    .bot { color: green; margin-bottom: 15px; }
+    #chat-form {
+      text-align: center;
+      margin-top: 20px;
+    }
+    #a {
+      background-color: rgb(113, 216, 93);
+      padding: 10px;
+      border: 3px solid #2ecc71;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    #message {
+      background-color: aquamarine;
+      border: 3px solid #2ecc71;
+      border-radius: 20px;
+      box-sizing: border-box;
+      width: 400px;
+      height: 40px;
+      padding: 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Chatbot Gemini</h2>
+  <div id="chatbox"></div>
+
+  <form id="chat-form">
+    <input type="text" id="message" placeholder="Nhập tin nhắn..." required>
+    <button id="a" type="submit">Gửi</button>
+  </form>
+
+  <script>
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("message");
+    const chatbox = document.getElementById("chatbox");
+  
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const msg = input.value.trim();
+      if (!msg) return;
+      chatbox.innerHTML += `<p>Bạn: ${msg}</p>`;
+      input.value = "";
+  
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "message=" + encodeURIComponent(msg)
+      });
+      const data = await res.json();
+      chatbox.innerHTML += `<p>🤖: ${data.response}</p>`;
+    };
+  </script>
+  
+</body>
+</html>
