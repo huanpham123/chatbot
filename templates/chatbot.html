@@ -2,52 +2,93 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- quan trọng để responsive -->
   <title>Chatbot Gemini</title>
   <style>
-    body { 
-      background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkjmugose6Ix-QVzZP0btnBPR9GDIrfUVV8Q&s");
-      font-family: Arial; padding: 20px; 
-      background-size: cover;
-      background-repeat: no-repeat;
-     }
-    #chatbox {
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkjmugose6Ix-QVzZP0btnBPR9GDIrfUVV8Q&s") no-repeat center/cover;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-      margin: 20px auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      max-width: 1500px;
-      background: white;
-      min-height: 200px;
-      max-height: 400px;
-      overflow-y: auto;
-      border-radius: 10px;
-    }
-    .user { color: blue; font-weight: bold; }
-    .bot { color: green; margin-bottom: 15px; }
-    #chat-form {
+    h2 {
       text-align: center;
-      margin-top: 20px;
+      margin-bottom: 20px;
+      color: #154e55;
     }
-    #a {
-      background-color: rgb(113, 216, 93);
+
+    #chatbox {
+      flex: 1;                  
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #ccc;
+      border-radius: 10px;
       padding: 10px;
+      overflow-y: auto;
+      min-height: 200px;
+    }
+
+    .user {
+      color: blue;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    .bot {
+      color: green;
+      margin: 5px 0 15px;
+    }
+
+    #chat-form {
+      display: flex;
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto 0;
+      gap: 10px;
+    }
+
+    #message {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #2ecc71;
+      border-radius: 20px;
+      font-size: 1em;
+    }
+
+    #a {
+      padding: 0 20px;
       border: 3px solid #2ecc71;
       border-radius: 20px;
+      background-color: rgb(113, 216, 93);
+      color: #154e55;
+      font-weight: bold;
       cursor: pointer;
     }
-    #message {
-      background-color: aquamarine;
-      border: 3px solid #2ecc71;
-      border-radius: 20px;
-      box-sizing: border-box;
-      width: 400px;
-      height: 40px;
-      padding: 0 10px;
+
+    /* Chỉnh responsive cho mobile */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      #chat-form {
+        flex-direction: column;
+      }
+      #a {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <h2 style="text-align:center;">Chatbot Gemini</h2>
+  <h2>Chatbot Gemini</h2>
   <div id="chatbox"></div>
 
   <form id="chat-form">
@@ -60,22 +101,24 @@
     const input = document.getElementById("message");
     const chatbox = document.getElementById("chatbox");
   
-    form.onsubmit = async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const msg = input.value.trim();
       if (!msg) return;
-      chatbox.innerHTML += `<p>Bạn: ${msg}</p>`;
+      chatbox.innerHTML += `<p class="user">Bạn: ${msg}</p>`;
       input.value = "";
-  
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      // Gọi API backend trả về JSON { response: "..." }
       const res = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "message=" + encodeURIComponent(msg)
       });
       const data = await res.json();
-      chatbox.innerHTML += `<p>🤖: ${data.response}</p>`;
-    };
+      chatbox.innerHTML += `<p class="bot">🤖: ${data.response}</p>`;
+      chatbox.scrollTop = chatbox.scrollHeight;
+    });
   </script>
-  
 </body>
 </html>
